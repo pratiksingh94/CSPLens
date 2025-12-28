@@ -6,6 +6,8 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { toast } from "sonner";
 import { Textarea } from "./ui/textarea";
+import analyse from "@/lib/analyse-csp";
+
 
 export default function Analyser() {
   const [urlInput, setURLInput] = useState("");
@@ -17,6 +19,13 @@ export default function Analyser() {
       toast.error(
         "Only one input is allowed at a time, either site URL or direct CSP header paste"
       );
+    
+    if(urlInput) {
+      // todo
+    } else {
+      const analysed = analyse(headerInput)
+      console.log(analysed)
+    }
   };
 
   return (
