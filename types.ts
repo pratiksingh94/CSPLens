@@ -1,10 +1,12 @@
 export type Level = | "GOOD" | "OK" | "WARNING" | "DANGER" | "INVALID";
 
+
+
 export type CSPSource = 
     | { kind: "keyword", value: string }
     | { kind: "scheme", value: string }
     | { kind: "host", value: string }
-    | { kind: "wildcard" }
+    | { kind: "wildcard", value: string }
     | { kind: "nonce", value: string };
 
 export type AnalysedCSPSource = {

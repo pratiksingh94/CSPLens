@@ -2,7 +2,7 @@ import { ClassifiedRule, CSPSource, ParsedRule } from "@/types";
 
 
 const classifySource = (src: string): CSPSource => {
-    if(src === "*") return { kind: "wildcard" }
+    if(src === "*") return { kind: "wildcard", value: "*" }
     if(src.startsWith("nonce-")) return { kind: "nonce", value: src }
     if(src.endsWith(":")) return { kind: "scheme", value: src }
     if(["self", "none", "unsafe-inline", "unsafe-eval"].includes(src)) return { kind: "keyword", value: src }

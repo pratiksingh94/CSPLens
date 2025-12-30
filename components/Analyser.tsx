@@ -6,12 +6,18 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { toast } from "sonner";
 import { Textarea } from "./ui/textarea";
+
 import analyse from "@/lib/analyse-csp";
+import AnalysedOutput from "./AnalysedOutput/PolicyBreakdown";
+
+import { AnalysedRule } from "@/types"
 
 
 export default function Analyser() {
   const [urlInput, setURLInput] = useState("");
   const [headerInput, setHeaderInput] = useState("");
+
+  const [analysedRules, setAnalysedRules] = useState<AnalysedRule[]>([])
 
   const handleAnalyseBtn = () => {
     if(!urlInput && !headerInput) toast.error("At least one input is required to analyse, URL or CSP header")
@@ -25,12 +31,13 @@ export default function Analyser() {
     } else {
       const analysed = analyse(headerInput)
       console.log(analysed)
+      setAnalysedRules(analysed)
     }
   };
 
   return (
     <div className="mt-2 rounded-lg border border-border bg-card p-5">
-      <div className="mt-2 rounded-sm bg-primary/10 p-3 shadow">
+      <div className="mt-4 rounded-md bg-primary/5 p-4 shadow-sm border border-border/50">
         <Label htmlFor="csp-link">Enter your site link:</Label>
         <Input
           type="text"
@@ -58,6 +65,7 @@ export default function Analyser() {
           Analyse
         </Button>
       </div>
+      <AnalysedOutput data={analysedRules}/>
     </div>
   );
 }

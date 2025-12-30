@@ -16,6 +16,16 @@
 --muted-foreground: #4F5F52;
   --border: #C8D6BB;
   --radius: 0.625rem;
+
+  
+  --warning: #E6B566;              /* muted amber, not piss yellow */
+  --warning-foreground: #3A2A05;
+
+  --destructive: #C65D4E;            /* muted brick red */
+  --destructive-foreground: #FFFFFF;
+
+  --ok: #6B8FB8;               /* muted steel blue */
+  --ok-foreground: #0F2233;
 }
 
 .dark {
@@ -28,6 +38,15 @@
   --muted: #2A332E;
   --muted-foreground: #9FB0A3;
   --border: #334036;
+
+  --warning: #D9A441;
+  --warning-foreground: #1A1304;
+
+  --destructive: #E07A6A;            /* softer red, not eye-bleed */
+  --destructive-foreground: #2A0E0A;
+
+  --ok: #7FA6CF;               /* softer sky-blue */
+  --ok-foreground: #08131F;
 }
 
 body {
@@ -112,6 +131,16 @@ body {
   --color-sidebar-border: var(--sidebar-border);
 
   --color-sidebar-ring: var(--sidebar-ring);
+
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-ok: var(--ok);
+  --color-ok-foreground: var(--ok-foreground);
 }
 
 @layer base {
