@@ -11,6 +11,7 @@ import analyse from "@/lib/analyse-csp";
 import AnalysedOutput from "./AnalysedOutput/PolicyBreakdown";
 
 import { AnalysedRule } from "@/types"
+import CSPOverview from "./AnalysedOutput/CSPOverview";
 
 
 export default function Analyser() {
@@ -65,6 +66,7 @@ export default function Analyser() {
           Analyse
         </Button>
       </div>
+      <CSPOverview data={analysedRules}/>
       <AnalysedOutput data={analysedRules}/>
     </div>
   );

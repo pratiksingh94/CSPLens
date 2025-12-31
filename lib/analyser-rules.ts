@@ -3,27 +3,33 @@ import { RuleCheck } from "@/types";
 const GLOBAL_RULES: RuleCheck[] = [
     {
         when: src => src.kind === "wildcard",
-        level: "DANGER"
+        level: "DANGER",
+        reason: "hi"
     },
     {
         when: src => src.kind === "keyword" && src.value === "unsafe-eval",
-        level: "DANGER"
+        level: "DANGER",
+        reason: "hi"
     },
     {
         when: src => src.kind === "keyword" && src.value === "unsafe-inline",
-        level: "DANGER"
+        level: "DANGER",
+        reason: "hi"
     },
     {
         when: src => src.kind === "keyword" && src.value === "self",
-        level: "GOOD"
+        level: "GOOD",
+        reason: "hi"
     },
     {
         when: src => src.kind === "keyword" && src.value === "none",
-        level: "GOOD"
+        level: "GOOD",
+        reason: "hi"
     },
     {
         when: src => src.kind === "nonce",
-        level: "GOOD"
+        level: "GOOD",
+        reason: "hi"
     },
 ]
 
@@ -31,49 +37,59 @@ const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
     "script-src": [
         {
             when: src => src.kind === "scheme" && src.value === "data:",
-            level: "DANGER"
+            level: "DANGER",
+            reason: "hi"
         },
         {
             when: src => src.kind === "scheme" && src.value === "blob:",
-            level: "WARNING"
+            level: "WARNING",
+            reason: "hi"
         },
         {
             when: src => src.kind === "host" && src.value.includes("*"),
-            level: "DANGER"
+            level: "DANGER",
+            reason: "hi"
         }
     ],
     "style-src": [
         {
             when: src => src.kind === "keyword" && src.value === "unsafe-eval",
-            level: "INVALID"
+            level: "INVALID",
+            reason: "hi"
         },
         {
             when: src => src.kind === "keyword" && src.value === "unsafe-inline",
-            level: "DANGER"
+            level: "DANGER",
+            reason: "hi"
         },
         {
             when: src => src.kind === "scheme" && src.value === "data:",
-            level: "WARNING"
+            level: "WARNING",
+            reason: "hi"
         },
         {
             when: src => src.kind === "host" && src.value.includes("*"),
-            level: "WARNING"
+            level: "WARNING",
+            reason: "hi"
         },
     ],
     "img-src": [
         {
             when: src => src.kind === "scheme" && src.value === "data:",
-            level: "WARNING"
+            level: "WARNING",
+            reason: "hi"
         },
         {
             when: src => src.kind === "wildcard",
-            level: "DANGER"
+            level: "DANGER",
+            reason: "hi"
         },
     ],
     "connect-src": [
         {
             when: src => src.kind === "host",
-            level: "WARNING"
+            level: "WARNING",
+            reason: "hi"
         }
     ]
 }

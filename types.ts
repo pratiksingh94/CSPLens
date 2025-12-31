@@ -11,7 +11,8 @@ export type CSPSource =
 
 export type AnalysedCSPSource = {
     source: CSPSource,
-    level: Level
+    level: Level;
+    reason: string;
 };
 
 
@@ -28,4 +29,10 @@ export type AnalysedRule = Rule<AnalysedCSPSource>;
 export type RuleCheck = {
     when: (src: CSPSource) => boolean;
     level: Level;
+    reason: string;
+}
+
+export type evaluatedOutcome = {
+    level: Level;
+    reason: string;
 }

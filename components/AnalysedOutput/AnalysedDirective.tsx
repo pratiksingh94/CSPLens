@@ -26,20 +26,18 @@ export default function AnalysedDirective({ rule }: Props) {
     return (
         <div>
             <p className="text-lg font-bold p-2"><code>{rule.directive}</code></p>
+            <TooltipProvider delayDuration={150}>
             {rule.sources.map(s => (
-                <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Badge className={`mx-1 ${levelClasses[s.level]}`}>{s.source.value}</Badge>
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs text-sm bg-foreground">
-                            kind: {s.source.kind}
-                            <br/>
-                            level: {s.level}
+                            <p>{s.reason}</p>
                         </TooltipContent>
                     </Tooltip>
-                </TooltipProvider>
             ))}
+            </TooltipProvider>
             <br/><br/>
             <hr/>
         </div>

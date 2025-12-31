@@ -24,6 +24,7 @@ export default function Page() {
             <Link href="https://content-security-policy.com/" className="text-primary">
               <code>Content-Security-Policy</code></Link> header helps you reduce XSS risks by declaring which dynamic resources are allowed to load.
           </p>
+          <p className="text-2xl text-red-500">UNDER DEVELOPMENT</p>
         </div>
 
         <div className="mt-2 px-6">

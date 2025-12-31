@@ -1,17 +1,17 @@
-import { AnalysedCSPSource, AnalysedRule, ClassifiedRule, CSPSource, Level } from "@/types";
+import { AnalysedCSPSource, AnalysedRule, ClassifiedRule, CSPSource, evaluatedOutcome, Level } from "@/types";
 import { getRulesForDirective } from "./analyser-rules";
 
 
-const evaluateSources = (directive: string, src: CSPSource): Level => {
+const evaluateSources = (directive: string, src: CSPSource): evaluatedOutcome => {
     const rules = getRulesForDirective(directive);
 
     for(const rule of rules) {
         if(rule.when(src)) {
-            return rule.level
+            return { level: rule.level, reason: rule.reason }
         }
     }
 
-    return "OK"
+    return { level: "OK", reason: "OK" }
 }
 
 const analyseCSP = (rules: ClassifiedRule[]): AnalysedRule[] => {
@@ -20,9 +20,11 @@ const analyseCSP = (rules: ClassifiedRule[]): AnalysedRule[] => {
     for(const rule of rules) {
         let evaluated: AnalysedCSPSource[] = []
         for(const source of rule.sources) {
+            let evaluationOutcome = evaluateSources(rule.directive, source);
             evaluated.push({
                 source,
-                level: evaluateSources(rule.directive, source)
+                level: evaluationOutcome.level,
+                reason: evaluationOutcome.reason
             })
         }
 
