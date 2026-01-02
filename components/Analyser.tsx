@@ -10,29 +10,31 @@ import { Textarea } from "./ui/textarea";
 import analyse from "@/lib/analyse-csp";
 import AnalysedOutput from "./AnalysedOutput/PolicyBreakdown";
 
-import { AnalysedRule } from "@/types"
+import { AnalysedRule } from "@/types";
 import CSPOverview from "./AnalysedOutput/CSPOverview";
-
 
 export default function Analyser() {
   const [urlInput, setURLInput] = useState("");
   const [headerInput, setHeaderInput] = useState("");
 
-  const [analysedRules, setAnalysedRules] = useState<AnalysedRule[]>([])
+  const [analysedRules, setAnalysedRules] = useState<AnalysedRule[]>([]);
 
   const handleAnalyseBtn = () => {
-    if(!urlInput && !headerInput) toast.error("At least one input is required to analyse, URL or CSP header")
+    if (!urlInput && !headerInput)
+      toast.error(
+        "At least one input is required to analyse, URL or CSP header",
+      );
     if (urlInput != "" && headerInput != "")
       toast.error(
-        "Only one input is allowed at a time, either site URL or direct CSP header paste"
+        "Only one input is allowed at a time, either site URL or direct CSP header paste",
       );
-    
-    if(urlInput) {
+
+    if (urlInput) {
       // todo
     } else {
-      const analysed = analyse(headerInput)
-      console.log(analysed)
-      setAnalysedRules(analysed)
+      const analysed = analyse(headerInput);
+      console.log(analysed);
+      setAnalysedRules(analysed);
     }
   };
 
@@ -43,21 +45,26 @@ export default function Analyser() {
         <Input
           type="text"
           id="csp-link"
-          placeholder="hi"
+          placeholder="Not availabel right now"
           className="mt-2 max-h-2xl"
           value={urlInput}
           onChange={(e) => setURLInput(e.target.value)}
-          disabled={!!headerInput}
+          disabled={true}
         />
         <p className="text-center m-4">OR</p>
         <Label htmlFor="csp-header">Enter your CSP header:</Label>
         <Textarea
           id="csp-header"
-          placeholder="hi"
-          className="mt-2 max-h-2xl"
+          placeholder="Please remove the header name 'Content-Security-Policy:'"
+          className="mt-2 max-h-2xl overflow-hidden"
           value={headerInput}
           onChange={(e) => setHeaderInput(e.target.value)}
           disabled={!!urlInput}
+          rows={1}
+          onInput={(e) => {
+            e.currentTarget.style.height = "auto";
+            e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+          }}
         />
         <Button
           className="mt-4 flex p-6 text-lg cursor-pointer"
@@ -66,8 +73,12 @@ export default function Analyser() {
           Analyse
         </Button>
       </div>
-      <CSPOverview data={analysedRules}/>
-      <AnalysedOutput data={analysedRules}/>
+      {!(analysedRules.length === 0) && (
+        <>
+          <CSPOverview data={analysedRules} />
+          <AnalysedOutput data={analysedRules} />
+        </>
+      )}
     </div>
   );
 }

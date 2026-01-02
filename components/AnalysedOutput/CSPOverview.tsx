@@ -31,20 +31,31 @@ export default function CSPOverview({ data }: Props) {
   console.log(overview);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+
+      {/* ==== STATS ==== */}
       <section className="rounded-md border bg-card p-4">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-          Stats
+          Policy Grade
         </h3>
 
         <div className="flex items-center gap-2">
-          <span className="text-2xl font-bold">{overview.count}</span>
-          <span className="text-muted-foreground">directives</span>
+          <span className="text-4xl font-bold text-destructive">{overview.policyGrade.grade}</span>
+          <span className="text-sm text-muted-foreground">- Security Score: {overview.policyGrade.score}/100</span>
         </div>
 
+        {overview.policyGrade.cappedBy && (
         <div className="mt-2 text-sm text-muted-foreground">
-          {overview.uniqueSources.length} unique sources
+          Grade capped at D: <span className="text-destructive">{overview.policyGrade.cappedBy}</span>
+        </div>
+        )}
+
+
+        <div className="mt-2 text-sm text-muted-foreground">
+          Based on detected dangerous and risky CSP directives
         </div>
       </section>
+
+      {/* ==== UNIQUE SOURCES ==== */}
       <section className="rounded-md border bg-card p-4">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-2">
           Unique Sources
@@ -61,21 +72,64 @@ export default function CSPOverview({ data }: Props) {
           ))}
         </div>
       </section>
-      <section className="md:col-span-2 rounded-md border border-destructive/40 bg-destructive/10 p-4">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-destructive mb-2">
+
+      {/* ==== RED FLAHS ==== */}
+      <section className="md:col-span-2 rounded-md border border-destructive/40 bg-card p-4">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-destructive mb-1 flex items-center gap-2">
           🚨 Red Flags
         </h3>
 
-        <div className="flex flex-wrap">
+        <p className="text-sm text-destructive/90 mb-3">
+          {overview.redFlags.length} high-risk CSP issues detected
+        </p>
+        
+        {/* <div className="flex flex-wrap gap-2">
           {overview.redFlags.map((s) => (
             <Badge
-              key={s.source.value}
-              className={`m-1 ${levelClasses[s.level]}`}
+              className="
+    bg-muted text-foreground
+    border border-destructive/40
+    font-medium
+    flex items-center gap-1
+  "
             >
+              <span className="text-destructive">⚠</span>
               {s.source.value}
             </Badge>
           ))}
+        </div> */}
+        <TooltipProvider>
+        <div className="flex flex-wrap gap-2">
+          {overview.redFlags.map((flag) => (
+            <Tooltip key={flag.key}>
+              <TooltipTrigger asChild>
+                <Badge className="bg-muted text-foreground border border-destructive/40 font-medium flex items-center gap-1 hover:bg-destructive/20">
+                  <span className="text-destructive">⚠</span>
+                  {flag.key}
+                  <span className="text-xs text-muted-foreground ml-1">
+                    · {flag.directives.length}
+                  </span>
+                </Badge>
+              </TooltipTrigger>
+
+              <TooltipContent className="max-w-xs rounded-md border bg-background p-3 shadow-md border-l-4 border-l-destructive">
+                <p className="font-medium leading-snug text-foreground">{flag.reason}</p>
+
+                <p className="mt-2 text-sm text-foreground">
+                  Seen in: {flag.directives.join(", ")}
+                </p>
+
+                {flag.recommendation && (
+                  <p className="mt-2 text-sm text-foreground/80">
+                    <span className="font-medium text-foreground">Fix:</span>{" "}
+                    {flag.recommendation}
+                  </p>
+                )}
+              </TooltipContent>
+            </Tooltip>
+          ))}
         </div>
+        </TooltipProvider>
       </section>
     </div>
   );
