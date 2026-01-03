@@ -10,17 +10,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import MissingDirectives from "./CSPOverview/MissingDirectives";
+import levelClasses from "@/lib/level-classes";
 
-const levelClasses = {
-  GOOD: "bg-primary text-primary-foreground hover:bg-primary/80 hover:text-primary-foreground",
-  OK: "bg-ok text-ok-foreground hover:bg-ok/80 hover:text-ok-foreground",
-  WARNING:
-    "bg-warning text-warning-foreground hover:bg-warning hover:text-warning-foreground",
-  DANGER:
-    "bg-destructive text-destructive-foreground hover:bg-destructive/80 hover:text-destructive-foreground",
-  INVALID:
-    "bg-card text-muted-foreground border border-border hover:bg-card/80 hover:text-muted-foreground",
-} as const;
 
 type Props = {
   data: AnalysedRule[];
@@ -55,7 +47,7 @@ export default function CSPOverview({ data }: Props) {
         </div>
       </section>
 
-      {/* ==== UNIQUE SOURCES ==== */}
+      {/* ==== UNIQUE SOURCES ====
       <section className="rounded-md border bg-card p-4">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-2">
           Unique Sources
@@ -71,7 +63,8 @@ export default function CSPOverview({ data }: Props) {
             </Badge>
           ))}
         </div>
-      </section>
+      </section> */}
+      <MissingDirectives data={overview.missingDirectives}/>
 
       {/* ==== RED FLAHS ==== */}
       <section className="md:col-span-2 rounded-md border border-destructive/40 bg-card p-4">
@@ -82,31 +75,13 @@ export default function CSPOverview({ data }: Props) {
         <p className="text-sm text-destructive/90 mb-3">
           {overview.redFlags.length} high-risk CSP issues detected
         </p>
-        
-        {/* <div className="flex flex-wrap gap-2">
-          {overview.redFlags.map((s) => (
-            <Badge
-              className="
-    bg-muted text-foreground
-    border border-destructive/40
-    font-medium
-    flex items-center gap-1
-  "
-            >
-              <span className="text-destructive">⚠</span>
-              {s.source.value}
-            </Badge>
-          ))}
-        </div> */}
-        <TooltipProvider>
         <div className="flex flex-wrap gap-2">
           {overview.redFlags.map((flag) => (
-            <Tooltip key={flag.key}>
+            <Tooltip key={flag.key} delayDuration={100}>
               <TooltipTrigger asChild>
-                <Badge className="bg-muted text-foreground border border-destructive/40 font-medium flex items-center gap-1 hover:bg-destructive/20">
-                  <span className="text-destructive">⚠</span>
+                <Badge className={levelClasses["DANGER"]}>
                   {flag.key}
-                  <span className="text-xs text-muted-foreground ml-1">
+                  <span className="text-xs ml-1">
                     · {flag.directives.length}
                   </span>
                 </Badge>
@@ -129,7 +104,6 @@ export default function CSPOverview({ data }: Props) {
             </Tooltip>
           ))}
         </div>
-        </TooltipProvider>
       </section>
     </div>
   );

@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import ThemeToggle from "@/components/ThemeToggle"
 import Analyser from "@/components/Analyser"
+import DevNote from "@/components/DevNote"
 
 export default function Page() {
   return (
@@ -22,9 +23,9 @@ export default function Page() {
           </h1>
           <p className="text-base sm:text-lg leading-relaxed max-w-prose text-foreground/80 mt-3">
             <Link href="https://content-security-policy.com/" className="text-primary">
-              <code>Content-Security-Policy</code></Link> header helps you reduce XSS risks by declaring which dynamic resources are allowed to load.
+              <code className="font-mono">Content-Security-Policy</code></Link> header helps you reduce XSS risks by declaring which dynamic resources are allowed to load.
           </p>
-          <p className="text-2xl text-red-500">UNDER DEVELOPMENT</p>
+          {/* <p className="text-2xl text-red-500">UNDER DEVELOPMENT</p> */}
         </div>
 
         <div className="mt-2 px-6">
@@ -58,6 +59,7 @@ export default function Page() {
           </Tabs>
         </div>
       </section>
+      <DevNote/>
     </main>
   )
 }

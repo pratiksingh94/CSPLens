@@ -1,3 +1,5 @@
+/* THIS IS NOT THE BEST CSS FILE, I USED AI IN THIS CUZ I AM ABSOLUTE DOGSHIT IN STYLING AND COLORS STUFF TWT  */
+
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
@@ -7,25 +9,26 @@
 
 :root {
   --background: #F1F3E0;
-  --foreground: #304231;           /* stronger text contrast */
+  --foreground: #304231;          
   --card: #D7E7C9;
   --card-foreground: #243023;
-  --primary: #5F8A5A;             /* richer green */
-  --primary-foreground: #ffffff;  /* or #1E2621 if used on light backgrounds */
+  --primary: #5F8A5A;             
+  --primary-foreground: #ffffff;  
   --muted: #ECEFDF;
 --muted-foreground: #4F5F52;
   --border: #C8D6BB;
   --radius: 0.625rem;
 
   
-  --warning: #E6B566;              /* muted amber, not piss yellow */
+  --warning: #E6B566;             
   --warning-foreground: #3A2A05;
 
-  --destructive: #C65D4E;            /* muted brick red */
+  --destructive: #C65D4E;          
   --destructive-foreground: #FFFFFF;
 
-  --ok: #6B8FB8;               /* muted steel blue */
+  --ok: #6B8FB8;              
   --ok-foreground: #0F2233;
+  
 }
 
 .dark {
@@ -42,16 +45,25 @@
   --warning: #D9A441;
   --warning-foreground: #1A1304;
 
-  --destructive: #E07A6A;            /* softer red, not eye-bleed */
+  --destructive: #E07A6A;            
   --destructive-foreground: #2A0E0A;
 
-  --ok: #7FA6CF;               /* softer sky-blue */
+  --ok: #7FA6CF;              
   --ok-foreground: #08131F;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+code,
+pre,
+kbd,
+samp,
+.font-mono {
+  font-family: var(--font-geist-mono), monospace;
 }
 
 @theme inline {

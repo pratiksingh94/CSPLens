@@ -60,3 +60,15 @@ export type RedFlag = {
   directives: string[];
   count: number;
 };
+
+
+export type MissingDirective = {
+  directive: string;
+  importance: string;
+  recommendation: string;
+  recommendedRule: string;
+  references?: {
+    label: string;
+    url: string;
+  };
+}

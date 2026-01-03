@@ -1,16 +1,19 @@
-import { AnalysedCSPSource, AnalysedRule, RedFlag } from "@/types";
+import { AnalysedCSPSource, AnalysedRule, MissingDirective, RedFlag } from "@/types";
+import IMPORTANT_DIRECTIVES from "./missing-directives";
 
 const getCSPOverview = (csp: AnalysedRule[]) => {
   const count = csp.length;
   const uniqueSources = getUniqueSources(csp);
   const redFlags = getRedFlags(csp);
   const policyGrade = getPolicyGrade(csp);
+  const missingDirectives = getMissingDirectives(csp);
 
   return {
     count,
     uniqueSources,
     redFlags,
-    policyGrade
+    policyGrade,
+    missingDirectives
   };
 };
 
@@ -113,6 +116,13 @@ const getPolicyGrade = (rules: AnalysedRule[]) => {
   return { score, grade: "F" };
 };
 
+const getMissingDirectives = (csp: AnalysedRule[]): MissingDirective[] => {
+    const existing = new Set(csp.map(r => r.directive));
+
+    return IMPORTANT_DIRECTIVES.filter(
+        imp => !existing.has(imp.directive)
+    )
+}
 
 
 export default getCSPOverview;

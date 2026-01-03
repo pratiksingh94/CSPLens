@@ -9,29 +9,27 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import levelClasses from "@/lib/level-classes";
 
 type Props = {
   rule: AnalysedRule;
 };
 
-const levelClasses = {
-  GOOD: "bg-primary text-primary-foreground hover:bg-primary/80 hover:text-primary-foreground",
-  OK: "bg-ok text-ok-foreground hover:bg-ok/80 hoveer:text-ok-foreground",
-  WARNING:
-    "bg-warning text-warning-foreground hover:bg-warning hover:text-warning-foreground",
-  DANGER:
-    "bg-destructive text-destructive-foreground hover:bg-destructive/80 hover:text-destructive-foreground",
-  INVALID:
-    "bg-card text-muted-foreground border border-border hover:bg-card/80 hover:text-muted-foreground",
-} as const;
-
 export default function AnalysedDirective({ rule }: Props) {
   return (
     <div>
-      <p className="text-lg font-bold p-2">
-        <code>{rule.directive}</code>
-      </p>
-      <TooltipProvider delayDuration={150}>
+      <div className="flex items-center justify-between px-2 py-1">
+      <h3 className="text-base font-semibold text-foreground">
+    <code className="rounded bg-muted px-1.5 py-0.5 text-sm font-mono">
+      {rule.directive}
+    </code>
+  </h3>
+
+  <span className="text-xs text-muted-foreground">
+    {rule.sources.length} source{rule.sources.length !== 1 && "s"}
+  </span>
+  </div>
+  <div className="px-2">
         {rule.sources.map((s, i) => (
           <Tooltip key={`${rule.directive}-${i}`}>
             <TooltipTrigger asChild>
@@ -73,10 +71,7 @@ export default function AnalysedDirective({ rule }: Props) {
             </TooltipContent>
           </Tooltip>
         ))}
-      </TooltipProvider>
-      <br />
-      <br />
-      <hr />
+</div>
     </div>
   );
 }

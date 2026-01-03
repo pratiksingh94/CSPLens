@@ -1,5 +1,6 @@
 "use client"
 
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider } from "next-themes"
 import type { ReactNode } from "react"
 
@@ -11,7 +12,9 @@ export function Providers({ children }: { children: ReactNode }) {
       defaultTheme="system"
       enableSystem
     >
-      {children}
+      <TooltipProvider>
+        {children}
+      </TooltipProvider>
     </ThemeProvider>
   )
 }

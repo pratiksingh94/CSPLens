@@ -10,8 +10,9 @@ import { Textarea } from "./ui/textarea";
 import analyse from "@/lib/analyse-csp";
 import AnalysedOutput from "./AnalysedOutput/PolicyBreakdown";
 
-import { AnalysedRule } from "@/types";
+import { AnalysedRule, MissingDirective } from "@/types";
 import CSPOverview from "./AnalysedOutput/CSPOverview";
+import Help from "./Help";
 
 export default function Analyser() {
   const [urlInput, setURLInput] = useState("");
@@ -33,7 +34,7 @@ export default function Analyser() {
       // todo
     } else {
       const analysed = analyse(headerInput);
-      console.log(analysed);
+      // console.log(analysed);
       setAnalysedRules(analysed);
     }
   };
@@ -75,6 +76,7 @@ export default function Analyser() {
       </div>
       {!(analysedRules.length === 0) && (
         <>
+          <Help/>
           <CSPOverview data={analysedRules} />
           <AnalysedOutput data={analysedRules} />
         </>
