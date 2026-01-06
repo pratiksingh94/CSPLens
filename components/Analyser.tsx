@@ -8,11 +8,12 @@ import { toast } from "sonner";
 import { Textarea } from "./ui/textarea";
 
 import analyse from "@/lib/analyse-csp";
-import AnalysedOutput from "./AnalysedOutput/PolicyBreakdown";
+import PolicyBreakdown from "./AnalysedOutput/PolicyBreakdown/PolicyBreakdown";
 
 import { AnalysedRule, MissingDirective } from "@/types";
-import CSPOverview from "./AnalysedOutput/CSPOverview";
+import CSPOverview from "./AnalysedOutput/CSPOverview/CSPOverview";
 import Help from "./Help";
+import AttackSurface from "./AnalysedOutput/AttackSurface/AttackSurface";
 
 export default function Analyser() {
   const [urlInput, setURLInput] = useState("");
@@ -31,7 +32,26 @@ export default function Analyser() {
       );
 
     if (urlInput) {
-      // todo
+      fetch("/api/fetch-csp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: urlInput })
+      }).then(async(res) => {
+        const data = await res.json();
+        if(!res.ok) {
+          toast.error(data.error);
+          return;
+        }
+
+        const analysed = analyse(data.csp);
+        setAnalysedRules(analysed)
+
+        if(data.reportOnly) {
+          toast.warning("CSP is Report-Only");
+        }
+      }).catch(err => {
+        toast.error(err.message)
+      })
     } else {
       const analysed = analyse(headerInput);
       // console.log(analysed);
@@ -50,7 +70,8 @@ export default function Analyser() {
           className="mt-2 max-h-2xl"
           value={urlInput}
           onChange={(e) => setURLInput(e.target.value)}
-          disabled={true}
+          // disabled={true}
+          disabled={!!headerInput}
         />
         <p className="text-center m-4">OR</p>
         <Label htmlFor="csp-header">Enter your CSP header:</Label>
@@ -78,7 +99,8 @@ export default function Analyser() {
         <>
           <Help/>
           <CSPOverview data={analysedRules} />
-          <AnalysedOutput data={analysedRules} />
+          <AttackSurface data={analysedRules}/>
+          <PolicyBreakdown data={analysedRules} />
         </>
       )}
     </div>

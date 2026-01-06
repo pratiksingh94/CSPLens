@@ -1,7 +1,7 @@
 "use client";
 
 import { AnalysedRule } from "@/types";
-import AnalysedDirective from "@/components/AnalysedOutput/AnalysedDirectiveItem";
+import AnalysedDirective from "@/components/AnalysedOutput/PolicyBreakdown/AnalysedDirectiveItem";
 
 
 type Props = {

@@ -8,7 +8,7 @@ const evaluateSources = (directive: string, src: CSPSource): evaluatedOutcome =>
     // note for self: rule are evaluated from top to bottom and first matching wins
     for(const rule of rules) {
         if(rule.when(src)) {
-            return { level: rule.level, reason: rule.reason, recommendation: rule.recommendation, references: rule.references }
+            return { level: rule.level, reason: rule.reason, recommendation: rule.recommendation, attackClass: rule.attackClass, references: rule.references }
         }
     }
 
@@ -27,6 +27,7 @@ const analyseCSP = (rules: ClassifiedRule[]): AnalysedRule[] => {
                 level: evaluationOutcome.level,
                 reason: evaluationOutcome.reason,
                 recommendation: evaluationOutcome.recommendation,
+                attackClass: evaluationOutcome.attackClass,
                 references: evaluationOutcome.references
             })
         }

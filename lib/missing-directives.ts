@@ -16,6 +16,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
   {
     directive: "script-src",
     importance: "Scripts are the primary vector for XSS attacks and full client-side compromise.",
+    attackClass: "XSS",
     recommendation: "Explicitly restrict script sources and avoid unsafe-inline where possible.",
     recommendedRule: "script-src 'self';",
     references: {
@@ -26,6 +27,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
   {
     directive: "object-src",
     importance: "Prevents execution of legacy plugins that are commonly abused or deprecated.",
+    attackClass: "SANDBOX_ESCAPE",
     recommendation: "Disable all object-based resources unless absolutely required.",
     recommendedRule: "object-src 'none';",
     references: {
@@ -37,6 +39,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
     directive: "base-uri",
     importance: "Stops attackers from redefining the base URL to hijack relative links.",
     recommendation: "Restrict base URIs to trusted origins only.",
+    attackClass: "XSS",
     recommendedRule: "base-uri 'self';",
     references: {
       label: "MDN: base-uri",
@@ -48,6 +51,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
     importance: "Prevents clickjacking by disallowing your site from being embedded in malicious iframes.",
     recommendation: "Explicitly define which origins, if any, may embed your site.",
     recommendedRule: "frame-ancestors 'none';",
+    attackClass: "CLICKJACKING",
     references: {
       label: "MDN: frame-ancestors",
       url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors"

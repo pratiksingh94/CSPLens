@@ -1,7 +1,7 @@
 "use client";
 
 import { AnalysedRule, Level } from "@/types";
-import { Badge } from "../ui/badge";
+import { Badge } from "../../ui/badge";
 import {
   Tooltip,
   TooltipContent,

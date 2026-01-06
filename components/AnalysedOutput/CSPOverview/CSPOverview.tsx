@@ -2,7 +2,6 @@
 
 import getCSPOverview from "@/lib/csp-overview";
 import { AnalysedRule } from "@/types";
-import { Badge } from "../ui/badge";
 import {
   Tooltip,
   TooltipContent,
@@ -10,8 +9,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import MissingDirectives from "./CSPOverview/MissingDirectives";
+import MissingDirectives from "./MissingDirectives";
 import levelClasses from "@/lib/level-classes";
+import { Badge } from "@/components/ui/badge";
 
 
 type Props = {

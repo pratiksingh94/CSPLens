@@ -12,6 +12,7 @@ export type AnalysedCSPSource = {
   level: Level;
   reason: string;
   recommendation?: string;
+  attackClass?: AttackClass;
   references?: {
     label: string;
     url: string;
@@ -27,11 +28,22 @@ export type ParsedRule = Rule<string>;
 export type ClassifiedRule = Rule<CSPSource>;
 export type AnalysedRule = Rule<AnalysedCSPSource>;
 
+export type AttackClass =
+  | "XSS"
+  | "DYNAMIC_CODE_EXECUTION"
+  | "CLICKJACKING"
+  | "DATA_EXFILTRATION"
+  | "UI_REDRESS"
+  | "TRACKING"
+  | "SUPPLY_CHAIN"
+  | "SANDBOX_ESCAPE";
+
 export type RuleCheck = {
   when: (src: CSPSource) => boolean;
   level: Level;
   reason: string;
   recommendation?: string;
+  attackClass?: AttackClass;
   references?: {
     label: string;
     url: string;
@@ -42,6 +54,7 @@ export type evaluatedOutcome = {
   level: Level;
   reason: string;
   recommendation?: string;
+  attackClass?: AttackClass;
   references?: {
     label: string;
     url: string;
@@ -61,14 +74,26 @@ export type RedFlag = {
   count: number;
 };
 
-
 export type MissingDirective = {
   directive: string;
   importance: string;
+  attackClass?: AttackClass;
   recommendation: string;
   recommendedRule: string;
   references?: {
     label: string;
     url: string;
   };
+};
+
+
+export type AttackSurfaceItem = {
+  id: string;
+  title: string;
+  severity: "HIGH" | "MEDIUM";
+  causes: {
+    directive: string;
+    source: string; // just one word that i can get from analysed source
+  }[];
+  impact: string;
 }

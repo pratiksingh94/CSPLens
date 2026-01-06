@@ -1,64 +1,78 @@
-import { ParsedRule, Rule } from "@/types";
+import { ParsedRule } from "@/types";
 
-// this one was a little mid
-// const parseCSP = (header: string): ParsedRule[] => {
-//     let rules = header.split(";");
-//     let ruleList: ParsedRule[] = [];
+const KNOWN_DIRECTIVES = new Set([
+  "default-src",
+  "script-src",
+  "style-src",
+  "img-src",
+  "connect-src",
+  "font-src",
+  "media-src",
+  "object-src",
+  "frame-src",
+  "frame-ancestors",
+  "worker-src",
+  "manifest-src",
+  "base-uri",
+  "form-action",
+  "navigate-to",
+  "prefetch-src",
+  "child-src",
+  "sandbox",
+  "report-uri",
+  "report-to",
+]);
 
-//     rules.forEach((e, i) => {
-//         const rule = e.trim().split(/\s+/);
+const normalizeHeader = (header: string): string => {
+  const trimmed = header.trim();
+  const lower = trimmed.toLowerCase();
 
-//         const directive = rule.shift();
-//         if(!directive) return;
+  if (lower.startsWith("content-security-policy:")) {
+    return trimmed.slice("content-security-policy:".length).trim()
+  }
 
-//         const sources = rule.map(s => s.replace(/'/g, ""))
+  if (lower.startsWith("content-security-policy-report-only:")) {
+    return trimmed
+      .slice("content-security-policy-report-only:".length)
+      .trim()
+  }
 
-//         let ruleObj: ParsedRule = {
-//             directive,
-//             sources
-//         }
-
-//         ruleList.push(ruleObj)
-//     })
-
-//     return ruleList
-// }
-
-// TODO: HANDLE HEADER NAME TOO
+  return trimmed;
+};
 
 const parseCSP = (header: string): ParsedRule[] => {
   const directiveMap = new Map<string, string[]>();
-  header
-    .split(";")
-    .map(part => part.trim())
-    .filter(Boolean)
-    .forEach(part => {
-      const tokens = part.split(/\s+/);
-      const directive = tokens.shift()?.toLowerCase();
-      if (!directive) return;
+  const normalized = normalizeHeader(header);
 
-      const sources = tokens.map(s =>
-        s.startsWith("'") && s.endsWith("'")
-          ? s.slice(1, -1)
-          : s
-      );
+  let currentDirective: string | null = null;
 
-      if (!directiveMap.has(directive)) {
-        directiveMap.set(directive, []);
+  for (const part of normalized.split(";")) {
+    const tokens = part.trim().split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) continue;
+
+    const first = tokens[0].toLowerCase()
+
+    if (KNOWN_DIRECTIVES.has(first)) {
+      currentDirective = tokens.shift()!.toLowerCase();
+
+      if (!directiveMap.has(currentDirective)) {
+        directiveMap.set(currentDirective, []);
       }
+    }
 
-      directiveMap.get(directive)!.push(...sources);
-    });
+    if (!currentDirective) continue;
 
-  return Array.from(directiveMap.entries()).map(
-    ([directive, sources]) => ({
-      directive,
-      sources,
-    })
-  );
+    const sources = tokens.map((t) =>
+      t.startsWith("'") && t.endsWith("'") ? t.slice(1, -1) : t
+    );
+
+    directiveMap.get(currentDirective)!.push(...sources)
+  }
+
+  return Array.from(directiveMap.entries()).map(([directive, sources]) => ({
+    directive,
+    sources,
+  }));
 };
-
-
-
 
 export default parseCSP;
