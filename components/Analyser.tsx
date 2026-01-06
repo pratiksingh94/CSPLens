@@ -66,7 +66,7 @@ export default function Analyser() {
         <Input
           type="text"
           id="csp-link"
-          placeholder="Not availabel right now"
+          placeholder="https://example.com"
           className="mt-2 max-h-2xl"
           value={urlInput}
           onChange={(e) => setURLInput(e.target.value)}
@@ -77,7 +77,7 @@ export default function Analyser() {
         <Label htmlFor="csp-header">Enter your CSP header:</Label>
         <Textarea
           id="csp-header"
-          placeholder="Please remove the header name 'Content-Security-Policy:'"
+          placeholder="content-security-policy: default-src..."
           className="mt-2 max-h-2xl overflow-hidden"
           value={headerInput}
           onChange={(e) => setHeaderInput(e.target.value)}
