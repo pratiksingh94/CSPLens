@@ -67,6 +67,12 @@ You can use CSPLens to analyse your CSP header!
   * Context-aware explanations
   * Spec-aware validation (e.g `unsafe-eval` in the wrong directive)
 
+* **Attack Surface Analysis**
+
+  * Unique source counting
+  * Possible attacks
+  * Overall attacks severity
+
 * **Policy Breakdown**
 
   * Per-directive analysis
@@ -78,12 +84,6 @@ You can use CSPLens to analyse your CSP header!
 ## Planned Features
 
 Ideas I have in my mind, and I will add them whenever I feel like tho
-
-* **Attack Surface Analysis**
-
-  * Unique source counting
-  * Possible attacks
-  * Overall attack surface scoring
 
 * **CSP Policy Builder**
 
