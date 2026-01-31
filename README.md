@@ -79,6 +79,11 @@ You can use CSPLens to analyse your CSP header!
   * Interactive source inspection
   * Clear recommendations and references
 
+* **Exporting analysis report**
+
+  * Shareable analysis reports
+  * Supports JSON and MARKDOWN format
+  * PDF soon.
 ---
 
 ## Planned Features
@@ -94,10 +99,6 @@ Ideas I have in my mind, and I will add them whenever I feel like tho
 
   * More directive-specific intelligence
   * Probably proper grammar? but that's far in future
-
-* **Reporting & Export**
-
-  * Shareable analysis reports
 
 ---
 
