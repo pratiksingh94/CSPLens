@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
     const csp =
       res.headers.get("content-security-policy") ??
       res.headers.get("content-security-policy-report-only");
+    // console.log({csp})
 
     if (!csp) {
       return NextResponse.json(

@@ -10,18 +10,46 @@ import { Textarea } from "./ui/textarea";
 import analyse from "@/lib/analyse-csp";
 import PolicyBreakdown from "./AnalysedOutput/PolicyBreakdown/PolicyBreakdown";
 
-import { AnalysedRule, MissingDirective } from "@/types";
+import { AnalysedRule, ExportMeta, MissingDirective } from "@/types";
 import CSPOverview from "./AnalysedOutput/CSPOverview/CSPOverview";
 import Help from "./Help";
 import AttackSurface from "./AnalysedOutput/AttackSurface/AttackSurface";
+import Export from "./Export";
+
+// lil helper
+const buildMeta = (
+  source: "direct-header" | "fetched-url",
+  reportOnly: boolean,
+  url?: string,
+): ExportMeta => ({
+  tool: "CSPLens - https://csplens.pratiksingh.xyz",
+  generatedAt: new Date().toISOString(),
+  input: {
+    source,
+    url,
+    reportOnly,
+  },
+});
 
 export default function Analyser() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const [urlInput, setURLInput] = useState("");
   const [headerInput, setHeaderInput] = useState("");
 
   const [analysedRules, setAnalysedRules] = useState<AnalysedRule[]>([]);
 
-  const handleAnalyseBtn = () => {
+  //random data just to please typescript
+  const [meta, setMeta] = useState<ExportMeta>({
+    tool: "CSPLens - https://csplens.pratiksingh.xyz",
+    generatedAt: "",
+    input: {
+      source: "direct-header",
+      reportOnly: false,
+    },
+  });
+
+  const handleAnalyseBtn = async () => {
     if (!urlInput && !headerInput)
       toast.error(
         "At least one input is required to analyse, URL or CSP header",
@@ -31,31 +59,38 @@ export default function Analyser() {
         "Only one input is allowed at a time, either site URL or direct CSP header paste",
       );
 
-    if (urlInput) {
-      fetch("/api/fetch-csp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: urlInput })
-      }).then(async(res) => {
+    setIsLoading(true);
+
+    try {
+      if (urlInput) {
+        const res = await fetch("/api/fetch-csp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: urlInput }),
+        });
         const data = await res.json();
-        if(!res.ok) {
+        if (!res.ok) {
           toast.error(data.error);
           return;
         }
 
         const analysed = analyse(data.csp);
-        setAnalysedRules(analysed)
+        setAnalysedRules(analysed);
 
-        if(data.reportOnly) {
+        if (data.reportOnly) {
           toast.warning("CSP is Report-Only");
         }
-      }).catch(err => {
-        toast.error(err.message)
-      })
-    } else {
-      const analysed = analyse(headerInput);
-      // console.log(analysed);
-      setAnalysedRules(analysed);
+
+        setMeta(buildMeta("fetched-url", data.reportOnly, urlInput));
+      } else {
+        const analysed = analyse(headerInput);
+        setAnalysedRules(analysed);
+        setMeta(buildMeta("direct-header", false));
+      }
+    } catch (err: any) {
+      toast.error(err.message ?? "Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -71,7 +106,7 @@ export default function Analyser() {
           value={urlInput}
           onChange={(e) => setURLInput(e.target.value)}
           // disabled={true}
-          disabled={!!headerInput}
+          disabled={isLoading || !!headerInput}
         />
         <p className="text-center m-4">OR</p>
         <Label htmlFor="csp-header">Enter your CSP header:</Label>
@@ -81,7 +116,7 @@ export default function Analyser() {
           className="mt-2 max-h-2xl overflow-hidden"
           value={headerInput}
           onChange={(e) => setHeaderInput(e.target.value)}
-          disabled={!!urlInput}
+          disabled={isLoading || !!urlInput}
           rows={1}
           onInput={(e) => {
             e.currentTarget.style.height = "auto";
@@ -91,15 +126,24 @@ export default function Analyser() {
         <Button
           className="mt-4 flex p-6 text-lg cursor-pointer"
           onClick={handleAnalyseBtn}
+          disabled={isLoading}
         >
-          Analyse
+          {isLoading ? "Analysing..." : "Analyse"}
         </Button>
       </div>
+      {isLoading && (
+        <div className="mt-6 rounded-md border border-border/50 p-4">
+          <p className="text-sm text-muted-foreground">
+            Preparing analysis results…
+          </p>
+        </div>
+      )}
+
       {!(analysedRules.length === 0) && (
         <>
-          <Help/>
+          <Export data={analysedRules} meta={meta} /> <Help />
           <CSPOverview data={analysedRules} />
-          <AttackSurface data={analysedRules}/>
+          <AttackSurface data={analysedRules} />
           <PolicyBreakdown data={analysedRules} />
         </>
       )}

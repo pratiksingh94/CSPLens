@@ -9,7 +9,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
     recommendation: "Always define a restrictive default policy to reduce the overall attack surface.",
     recommendedRule: "default-src 'self';",
     references: {
-      label: "MDN: default-src",
+      label: "MDN - default-src",
       url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/default-src"
     }
   },
@@ -20,7 +20,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
     recommendation: "Explicitly restrict script sources and avoid unsafe-inline where possible.",
     recommendedRule: "script-src 'self';",
     references: {
-      label: "MDN: script-src",
+      label: "MDN - script-src",
       url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src"
     }
   },
@@ -31,7 +31,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
     recommendation: "Disable all object-based resources unless absolutely required.",
     recommendedRule: "object-src 'none';",
     references: {
-      label: "MDN: object-src",
+      label: "MDN - object-src",
       url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/object-src"
     }
   },
@@ -42,7 +42,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
     attackClass: "XSS",
     recommendedRule: "base-uri 'self';",
     references: {
-      label: "MDN: base-uri",
+      label: "MDN - base-uri",
       url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/base-uri"
     }
   },
@@ -53,7 +53,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
     recommendedRule: "frame-ancestors 'none';",
     attackClass: "CLICKJACKING",
     references: {
-      label: "MDN: frame-ancestors",
+      label: "MDN - frame-ancestors",
       url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors"
     }
   },
@@ -63,7 +63,7 @@ const IMPORTANT_DIRECTIVES: MissingDirective[] = [
     recommendation: "Restrict form submissions to trusted origins only.",
     recommendedRule: "form-action 'self';",
     references: {
-      label: "MDN: form-action",
+      label: "MDN - form-action",
       url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/form-action"
     }
   }

@@ -97,3 +97,37 @@ export type AttackSurfaceItem = {
   }[];
   impact: string;
 }
+
+export type ExportMeta = {
+  tool: "CSPLens - https://csplens.pratiksingh.xyz";
+  generatedAt: string;
+  input: {
+    source: "direct-header" | "fetched-url";
+    url?: string;
+    reportOnly: boolean;
+  }
+}
+
+export type ExportOverview = {
+  policyGrade: {
+    grade: string;
+    score: number;
+    cappedBy?: string;
+  };
+  summary: {
+    directivesPresent: number;
+    missingCritical: number;
+    redFlagCount: number;
+  }
+}
+
+export type ExportData = {
+  meta: ExportMeta;
+  overview: ExportOverview;
+  attackSurface: AttackSurfaceItem[];
+  findings: {
+    missingDirectives: MissingDirective[];
+    redFlags: RedFlag[]
+  };
+  policy: AnalysedRule[]
+}

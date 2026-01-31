@@ -101,7 +101,7 @@ const getPolicyGrade = (rules: AnalysedRule[]) => {
 
 
   if (hasScriptUnsafeInline || hasScriptUnsafeEval) {
-    score = Math.min(score, 60); // no XSS = no more than D lmao
+    score = Math.min(score, 60); // XSS = no more than D lmao
   }
 
   

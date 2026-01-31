@@ -20,7 +20,7 @@ type Props = {
 
 export default function CSPOverview({ data }: Props) {
   const overview = getCSPOverview(data);
-  console.log(overview);
+  // console.log(overview);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
 
