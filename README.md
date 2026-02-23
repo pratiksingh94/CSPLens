@@ -84,16 +84,15 @@ You can use CSPLens to analyse your CSP header!
   * Shareable analysis reports
   * Supports JSON and MARKDOWN format
   * PDF soon.
+* **CSP Policy Builder**
+
+  * Build CSPs interactively
+  * Visual feedback while constructing policies
 ---
 
 ## Planned Features
 
 Ideas I have in my mind, and I will add them whenever I feel like tho
-
-* **CSP Policy Builder**
-
-  * Build CSPs interactively
-  * Visual feedback while constructing policies
 
 * **Improved Rule Analysis (current one is a lil mid)**
 

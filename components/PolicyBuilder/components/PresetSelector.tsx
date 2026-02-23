@@ -96,9 +96,9 @@ export function PresetSelctor({ onSelect, className }: Props) {
                     <span className="text-sm font-medium">{config.name}</span>
                     {isSelected && <Check className="h-3 w-3 text-primary" />}
                   </div>
-                  <p className="text-xs text-muted-foreground truncate">
+                  {/* <p className="text-xs text-muted-foreground truncate">
                     {config.description}
-                  </p>
+                  </p> */}
                 </button>
               );
             })}
