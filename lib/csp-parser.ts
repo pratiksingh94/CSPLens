@@ -62,11 +62,12 @@ const parseCSP = (header: string): ParsedRule[] => {
 
     if (!currentDirective) continue;
 
-    const sources = tokens.map((t) =>
-      t.startsWith("'") && t.endsWith("'") ? t.slice(1, -1) : t
-    );
+    // messing with import function
+    // const sources = tokens.map((t) =>
+    //   t.startsWith("'") && t.endsWith("'") ? t.slice(1, -1) : t
+    // );
 
-    directiveMap.get(currentDirective)!.push(...sources)
+    directiveMap.get(currentDirective)!.push(...tokens)
   }
 
   return Array.from(directiveMap.entries()).map(([directive, sources]) => ({

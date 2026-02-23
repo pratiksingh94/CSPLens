@@ -1,20 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import { toast } from "sonner";
-import { Textarea } from "./ui/textarea";
+import { Textarea } from "../ui/textarea";
 
 import analyse from "@/lib/analyse-csp";
 import PolicyBreakdown from "./AnalysedOutput/PolicyBreakdown/PolicyBreakdown";
 
 import { AnalysedRule, ExportMeta, MissingDirective } from "@/types";
 import CSPOverview from "./AnalysedOutput/CSPOverview/CSPOverview";
-import Help from "./Help";
+import Help from "../Help";
 import AttackSurface from "./AnalysedOutput/AttackSurface/AttackSurface";
-import Export from "./Export";
+import Export from "../Export";
 
 // lil helper
 const buildMeta = (

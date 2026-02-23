@@ -1,7 +1,7 @@
 "use client";
 
 import { MissingDirective } from "@/types";
-import { Badge } from "../../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,

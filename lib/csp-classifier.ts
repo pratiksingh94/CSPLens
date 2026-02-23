@@ -2,12 +2,14 @@ import { ClassifiedRule, CSPSource, ParsedRule } from "@/types";
 
 
 const classifySource = (src: string): CSPSource => {
-    if(src === "*") return { kind: "wildcard", value: "*" }
-    if(src.startsWith("nonce-")) return { kind: "nonce", value: src }
-    if(src.endsWith(":")) return { kind: "scheme", value: src }
-    if(["self", "none", "unsafe-inline", "unsafe-eval"].includes(src)) return { kind: "keyword", value: src }
+    const normalized = src.startsWith("'") && src.endsWith("'") ? src.slice(1, -1) : src;
 
-    return { kind: "host", value: src }
+    if(normalized === "*") return { kind: "wildcard", value: "*" }
+    if(normalized.startsWith("nonce-")) return { kind: "nonce", value: normalized }
+    if(normalized.endsWith(":")) return { kind: "scheme", value: normalized }
+    if(["self", "none", "unsafe-inline", "unsafe-eval"].includes(normalized)) return { kind: "keyword", value: normalized }
+
+    return { kind: "host", value: normalized }
 }
 
 const classifyCSP = (parsedCSP: ParsedRule[]): ClassifiedRule[] => {

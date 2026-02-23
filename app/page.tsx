@@ -3,8 +3,9 @@ import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import ThemeToggle from "@/components/ThemeToggle"
-import Analyser from "@/components/Analyser"
+import Analyser from "@/components/Analyser/Analyser"
 import DevNote from "@/components/DevNote"
+import { PolicyBuilder } from "@/components/PolicyBuilder/PolicyBuilder"
 
 export default function Page() {
   return (
@@ -51,11 +52,7 @@ export default function Page() {
             ">Policy Builder</TabsTrigger>
             </TabsList>
             <TabsContent value="analyser"><Analyser/></TabsContent>
-            <TabsContent value="builder">
-              <div className="rounded-lg border border-border bg-card p-6 text-center">
-                <p className="text-lg font-medium text-muted-foreground">Coming Soon</p>
-              </div>
-            </TabsContent>
+            <TabsContent value="builder"><PolicyBuilder/></TabsContent>
           </Tabs>
         </div>
       </section>
