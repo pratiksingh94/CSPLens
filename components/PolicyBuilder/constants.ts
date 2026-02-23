@@ -1,105 +1,103 @@
 import IMPORTANT_DIRECTIVES from "@/lib/missing-directives";
 
-
 // derive from the list
-const IMPORTANT_SET = new Set(IMPORTANT_DIRECTIVES.map(d => d.directive))
+const IMPORTANT_SET = new Set(IMPORTANT_DIRECTIVES.map((d) => d.directive));
 
 // metadata
 export type DirectiveInfo = {
   name: string;
   description: string;
   icon: string;
-  boolean?: boolean
-}
-
+  boolean?: boolean;
+};
 
 export const CSP_DIRECTIVES: DirectiveInfo[] = [
   {
     name: "default-src",
     description: "Fallback for other fetch directives",
-    icon: "Shield"
+    icon: "Shield",
   },
   {
     name: "script-src",
     description: "valid source for JavaScript",
-    icon: "Code"
+    icon: "Code",
   },
   {
     name: "style-src",
     description: "Valid source for stylesheets",
-    icon: "Palette"
+    icon: "Palette",
   },
   {
     name: "img-src",
     description: "Valid sources for images",
-    icon: "Image"
+    icon: "Image",
   },
   {
     name: "connect-src",
     description: "Valid targets for fetch, WebSocket, etc",
-    icon: "Wifi"
+    icon: "Wifi",
   },
   {
     name: "font-src",
     description: "Valid sources for font",
-    icon: "Type"
-  }, 
+    icon: "Type",
+  },
   {
     name: "media-src",
     description: "Valid sources for media",
-    icon: "Video"
+    icon: "Video",
   },
   {
     name: "object-src",
     description: "Valid sources for plugins",
-    icon: "Box"
+    icon: "Box",
   },
   {
     name: "frame-src",
     description: "Valid sources for frames",
-    icon: "Frame"
+    icon: "Frame",
   },
   {
     name: "frame-ancestors",
     description: "Valid parents for embedding",
-    icon: "Layers"
+    icon: "Layers",
   },
   {
     name: "worker-src",
     description: "Valid sources for workers",
-    icon: "Cpu"
+    icon: "Cpu",
   },
   {
     name: "manifest-src",
     description: "Valid sources for manifests",
-    icon: "FileJson"
+    icon: "FileJson",
   },
   {
     name: "base-uri",
     description: "Valid base URLs for document",
-    icon: "Link"
+    icon: "Link",
   },
   {
     name: "form-action",
     description: "Valid targets for form submissions",
-    icon: "Send"
+    icon: "Send",
   },
   {
     name: "upgrade-insecure-requests",
-    description:"Upgrade HTTP to HTTPS",
+    description: "Upgrade HTTP to HTTPS",
     icon: "Lock",
-    boolean: true
+    boolean: true,
   },
   {
     name: "block-all-mixed-content",
     description: "Block mixed HTTP/HTTPS conent",
     icon: "Ban",
-    boolean: true
-  }
-]
+    boolean: true,
+  },
+];
 
-export const isDirectiveImportant = (directive: string) => IMPORTANT_SET.has(directive);
-
+export const isDirectiveImportant = (directive: string) =>
+  IMPORTANT_SET.has(directive);
 
 export const POLICY_PRESET = {
   strict: {
@@ -115,8 +113,8 @@ export const POLICY_PRESET = {
       "object-src": ["'none'"],
       "frame-ancestors": ["'none'"],
       "base-uri": ["'self'"],
-      "form-action": ["'self'"]
-    }
+      "form-action": ["'self'"],
+    },
   },
   balanced: {
     name: "Balanced",
@@ -131,8 +129,8 @@ export const POLICY_PRESET = {
       "object-src": ["'none'"],
       "frame-ancestors": ["'self'"],
       "base-uri": ["'self'"],
-      "form-action": ["'self'"]
-    }
+      "form-action": ["'self'"],
+    },
   },
   legacy: {
     name: "Legacy",
@@ -145,7 +143,7 @@ export const POLICY_PRESET = {
       "connect-src": ["*"],
       "font-src": ["*"],
       "object-src": ["*"],
-      "frame-ancestors": ["*"]
+      "frame-ancestors": ["*"],
     },
   },
   api: {
@@ -155,9 +153,9 @@ export const POLICY_PRESET = {
       "default-src": ["'none'"],
       "frame-ancestors": ["'none'"],
       "base-uri": ["'none'"],
-      "form-action": ["'none'"]
-    }
-  }
-} as const
+      "form-action": ["'none'"],
+    },
+  },
+} as const;
 
 export type PolicyPreset = keyof typeof POLICY_PRESET;

@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 
-import { POLICY_PRESET, type PolicyPreset} from "../constants"
+import { POLICY_PRESET, type PolicyPreset } from "../constants";
 import { getRulesForDirective } from "@/lib/analyser-rules";
 import IMPORTANT_DIRECTIVES from "@/lib/missing-directives";
 import analyse from "@/lib/analyse-csp";
@@ -13,7 +13,7 @@ import parseCSP from "@/lib/csp-parser";
 
 export type DirectiveState = {
   enabled: boolean;
-  sources: string[]
+  sources: string[];
 };
 
 export type PolicyState = Map<string, DirectiveState>;
@@ -23,89 +23,91 @@ export type SourceValidation = {
   reason: string;
   recommendation?: string;
   attackClass?: string;
-}
+};
 
-export function usePolicyBuilder () {
+export function usePolicyBuilder() {
   // empty state
   const [policy, setPolicy] = useState<PolicyState>(() => new Map());
-  const [booleanDirectives, setBooleanDirectives] = useState<Set<string>>(() => new Set());
+  const [booleanDirectives, setBooleanDirectives] = useState<Set<string>>(
+    () => new Set(),
+  );
   const [reportOnly, setReportOnly] = useState(false);
 
   // toggle directive
   const toggleDirective = useCallback((directive: string) => {
-    setPolicy(prev => {
-      const next = new Map(prev)
-      const current = next.get(directive)
-      if(current) {
-        next.set(directive, { ...current, enabled: !current.enabled })
+    setPolicy((prev) => {
+      const next = new Map(prev);
+      const current = next.get(directive);
+      if (current) {
+        next.set(directive, { ...current, enabled: !current.enabled });
       } else {
-        next.set(directive, { enabled: true, sources: [] })
+        next.set(directive, { enabled: true, sources: [] });
       }
       return next;
-    })
-  }, [])
+    });
+  }, []);
 
   // add source
   const addSource = useCallback((directive: string, source: string) => {
-    const trimmed = source.trim()
-    if(!trimmed) return;
+    const trimmed = source.trim();
+    if (!trimmed) return;
 
-    setPolicy(prev => {
-      const next = new Map(prev)
-      const current = next.get(directive)
-      if(current) {
-        if(!current.sources.includes(trimmed)) {
+    setPolicy((prev) => {
+      const next = new Map(prev);
+      const current = next.get(directive);
+      if (current) {
+        if (!current.sources.includes(trimmed)) {
           next.set(directive, {
-          ...current,
-          enabled: true,
-          sources: [...current.sources, trimmed]
-        })
+            ...current,
+            enabled: true,
+            sources: [...current.sources, trimmed],
+          });
         }
       } else {
         next.set(directive, {
           enabled: true,
-          sources: [trimmed]
-        })
+          sources: [trimmed],
+        });
       }
       return next;
-    })
-  }, [])
+    });
+  }, []);
 
   // remove source
   const removeSource = useCallback((directive: string, source: string) => {
-    setPolicy(prev => {
-      const next = new Map(prev)
-      const current = next.get(directive)
-      if(current) {
-        const newSources = current.sources.filter((s) => s !== source)
+    setPolicy((prev) => {
+      const next = new Map(prev);
+      const current = next.get(directive);
+      if (current) {
+        const newSources = current.sources.filter((s) => s !== source);
         next.set(directive, {
           ...current,
           sources: newSources,
-          enabled: newSources.length > 0
-        })
+          enabled: newSources.length > 0,
+        });
       }
       return next;
-    })
-  }, [])
+    });
+  }, []);
 
   // toggle boolean directives like upgrade-insecure-requestr
   const toggleBooleanDirective = useCallback((directive: string) => {
-    setBooleanDirectives(prev => {
-      const next = new Set(prev)
-      if(next.has(directive)) {
-        next.delete(directive)
+    setBooleanDirectives((prev) => {
+      const next = new Set(prev);
+      if (next.has(directive)) {
+        next.delete(directive);
       } else {
-        next.add(directive)
+        next.add(directive);
       }
       return next;
-    })
-  }, [])
+    });
+  }, []);
 
   // clear all directives
   const clearAll = useCallback(() => {
     setPolicy(new Map());
     setBooleanDirectives(new Set());
-  }, [])
+  }, []);
 
   // apply preset
   const applyPreset = useCallback((preset: PolicyPreset) => {
@@ -127,109 +129,113 @@ export function usePolicyBuilder () {
       const sourceArray = sources as readonly string[];
       newPolicy.set(directive, {
         enabled: true,
-        sources: [...sourceArray]
-      })
-    })
+        sources: [...sourceArray],
+      });
+    });
 
     setPolicy(newPolicy);
     setBooleanDirectives(new Set());
-  }, [])
+  }, []);
 
   // add self to all enabled directives
   const addSelfToAll = useCallback(() => {
-    setPolicy(prev => {
-      const next = new Map(prev)
+    setPolicy((prev) => {
+      const next = new Map(prev);
       next.forEach((state, directive) => {
-        if(state.enabled && !state.sources.includes("'self'")) {
+        if (state.enabled && !state.sources.includes("'self'")) {
           next.set(directive, {
             ...state,
-            sources: [...state.sources, "'self'"]
-          })
+            sources: [...state.sources, "'self'"],
+          });
         }
-      })
+      });
       return next;
-    })
-  }, [])
+    });
+  }, []);
 
   // generate CSP string
   const generateCSP = useMemo(() => {
     const parts: string[] = [];
 
     policy.forEach((state, directive) => {
-      if(state.enabled && state.sources.length > 0) {
+      if (state.enabled && state.sources.length > 0) {
         parts.push(`${directive} ${state.sources.join(" ")}`);
       }
-    })
+    });
 
     booleanDirectives.forEach((directive) => {
       parts.push(directive);
-    })
+    });
 
     return parts.join("; ");
-  }, [policy, booleanDirectives])
+  }, [policy, booleanDirectives]);
 
   // get enabled directive count
   const enabledCount = useMemo(() => {
     let count = 0;
-    policy.forEach(state => {
-      if(state.enabled) count++;
-    })
+    policy.forEach((state) => {
+      if (state.enabled) count++;
+    });
     count += booleanDirectives.size;
     return count;
-  },[policy, booleanDirectives])
+  }, [policy, booleanDirectives]);
 
   // analyse csp using the same lib used to analyser part of app
   const analysedCSP = useMemo(() => {
-    if(!generateCSP || enabledCount === 0) return [];
-    return analyse(generateCSP)
-  }, [generateCSP, enabledCount])
+    if (!generateCSP || enabledCount === 0) return [];
+    return analyse(generateCSP);
+  }, [generateCSP, enabledCount]);
 
   // get csp overview
   const overview = useMemo(() => {
-    if(analysedCSP.length === 0) {
+    if (analysedCSP.length === 0) {
       return {
-        count : 0,
+        count: 0,
         uniqueSources: [],
         redFlags: [],
         policyGrade: { score: 0, grade: "-" },
-        missingDirectives: IMPORTANT_DIRECTIVES
-      }
+        missingDirectives: IMPORTANT_DIRECTIVES,
+      };
     }
 
-    return getCSPOverview(analysedCSP)
-  }, [analysedCSP])
+    return getCSPOverview(analysedCSP);
+  }, [analysedCSP]);
 
   // build attack surface
   const attackSurface = useMemo(() => {
-    if(analysedCSP.length === 0) return [];
-    return buildAttackSurface(analysedCSP)
-  }, [analysedCSP])
+    if (analysedCSP.length === 0) return [];
+    return buildAttackSurface(analysedCSP);
+  }, [analysedCSP]);
 
   // validate sources real time
-  const validateSource = useCallback((directive: string, source: string): SourceValidation | null => {
-    if(!source.trim()) return null;
+  const validateSource = useCallback(
+    (directive: string, source: string): SourceValidation | null => {
+      if (!source.trim()) return null;
 
-    const classifiedArr = classifyCSP([{ directive, sources: [source] }]);
-    const classified = classifiedArr[0]?.sources[0];
+      const classifiedArr = classifyCSP([{ directive, sources: [source] }]);
+      const classified = classifiedArr[0]?.sources[0];
 
-    if(!classified) return null;
+      if (!classified) return null;
 
-    const rules = getRulesForDirective(directive);
-    for (const r of rules) {
-      if(r.when(classified)) {
-        return {
-          level: r.level,
-          reason: r.reason,
-          recommendation: r.recommendation,
-          attackClass: r.attackClass
+      const rules = getRulesForDirective(directive);
+      for (const r of rules) {
+        if (r.when(classified)) {
+          return {
+            level: r.level,
+            reason: r.reason,
+            recommendation: r.recommendation,
+            attackClass: r.attackClass,
+          };
         }
       }
-    }
 
-    return {
-      level: "OK", reason: "OK, just be careful who you trust."
-    }
-  }, [])
+      return {
+        level: "OK",
+        reason: "OK, just be careful who you trust.",
+      };
+    },
+    [],
+  );
 
   // import pre-made csp
   const importCSP = useCallback((cspString: string) => {
@@ -239,13 +245,13 @@ export function usePolicyBuilder () {
     parsed.forEach(({ directive, sources }) => {
       newPolicy.set(directive, {
         enabled: true,
-        sources: [...sources]
-      })
-    })
+        sources: [...sources],
+      });
+    });
 
     setPolicy(newPolicy);
     setBooleanDirectives(new Set());
-  }, [])
+  }, []);
 
   return {
     // states
@@ -273,8 +279,8 @@ export function usePolicyBuilder () {
     overview,
     attackSurface,
     validateSource,
-    missingDirectives: IMPORTANT_DIRECTIVES
-  }
+    missingDirectives: IMPORTANT_DIRECTIVES,
+  };
 }
 
 export type usePolicyBuilderReturn = ReturnType<typeof usePolicyBuilder>;
