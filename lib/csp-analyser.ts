@@ -32,6 +32,19 @@ const analyseCSP = (rules: ClassifiedRule[]): AnalysedRule[] => {
             })
         }
 
+        if(evaluated.length === 0) {
+            let evaluationOutcome = evaluateSources(rule.directive, { kind: "keyword", value: "" } as CSPSource);
+
+            evaluated.push({
+                source: {kind: "keyword", value: ""},
+                level: evaluationOutcome.level,
+                reason: evaluationOutcome.reason,
+                recommendation: evaluationOutcome.recommendation,
+                attackClass: evaluationOutcome.attackClass,
+                references: evaluationOutcome.references
+            })
+        }
+
         analysedRules.push({
             directive: rule.directive,
             sources: evaluated

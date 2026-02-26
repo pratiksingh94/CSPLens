@@ -21,6 +21,8 @@ const KNOWN_DIRECTIVES = new Set([
   "sandbox",
   "report-uri",
   "report-to",
+  "upgrade-insecure-requests",
+  "block-all-mixed-content"
 ]);
 
 const normalizeHeader = (header: string): string => {

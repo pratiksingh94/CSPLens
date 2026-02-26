@@ -1,27 +1,23 @@
 "use client";
 
 import { AnalysedRule } from "@/types";
-import AnalysedDirective from "@/components/Analyser/AnalysedOutput/PolicyBreakdown/AnalysedDirectiveItem";
-
+import AnalysedDirective from "./AnalysedDirectiveItem";
 
 type Props = {
-  data: AnalysedRule[]
-}
+  data: AnalysedRule[];
+};
 
-export default function PolicyBreakdown({data}: Props) {
+export default function PolicyBreakdown({ data }: Props) {
   return (
-    <div className="mt-4 rounded-md bg-primary/5 p-4 shadow-sm border border-border/50">
-      <h2 className="text-2xl my-3 font-extrabold tracking-tight">Policy Breakdown</h2>
-      <p className="text-muted-foreground">per-directive source analysis</p>
-      <div className="my-4 h-px bg-border/60" />
-      {data.map((d, i) => (
-        <>
-          <AnalysedDirective rule={d} key={d.directive}/>
-
-          {/* there you go @snxhasish, now your eyes wont bleed */}
-          {(i === data.length-1) ? "" : (<><br /><hr /></>)}
-        </>
-      ))}
+    <div className="mt-4 rounded-lg border border-border bg-card p-5">
+      <h2 className="text-xl font-bold">Policy Breakdown</h2>
+      <p className="text-sm text-muted-foreground">Per-directive source analysis</p>
+      
+      <div className="mt-4 space-y-4">
+        {data.map((d) => (
+          <AnalysedDirective rule={d} key={d.directive} />
+        ))}
+      </div>
     </div>
   );
 }

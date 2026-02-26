@@ -5,7 +5,8 @@ export type CSPSource =
   | { kind: "scheme"; value: string }
   | { kind: "host"; value: string }
   | { kind: "wildcard"; value: string }
-  | { kind: "nonce"; value: string };
+  | { kind: "nonce"; value: string }
+  | { kind: "hash", value: string };
 
 export type AnalysedCSPSource = {
   source: CSPSource;
@@ -74,8 +75,12 @@ export type RedFlag = {
   count: number;
 };
 
+
+export type DirectiveImportance = "critical" | "important" | "optional";
+
 export type MissingDirective = {
   directive: string;
+  importanceLevel: DirectiveImportance;
   importance: string;
   attackClass?: AttackClass;
   recommendation: string;
@@ -130,4 +135,22 @@ export type ExportData = {
     redFlags: RedFlag[]
   };
   policy: AnalysedRule[]
+}
+
+
+
+
+
+export type Recommendation = {
+  id: string;
+  priority: "high" | "medium" | "low";
+  category: "security" | "best-practice" | "compatibility";
+  title: string;
+  description: string;
+  action: string;
+  impact: string;
+  references?: {
+    label: string;
+    url: string;
+  }
 }

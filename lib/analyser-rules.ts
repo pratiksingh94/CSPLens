@@ -64,6 +64,28 @@ const GLOBAL_RULES: RuleCheck[] = [
 ];
 
 const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
+  "upgrade-insecure-requests": [
+    {
+      when: () => true,
+      level: "GOOD",
+      reason: "Automatically upgrades HTTP to HTTPS.",
+      references: {
+        label: "MDN - upgrade-insecure-requests",
+        url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/upgrade-insecure-requests"
+      }
+    }
+  ],
+  "block-all-mixed-content": [
+    {
+      when: () => true,
+      level: "GOOD",
+      reason: "Prevents mixed content (HTTP on HTTPs pages). Obsolete but useful for older browsers.",
+      references: {
+        label: "MDN - block-all-mixed-content",
+        url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/block-all-mixed-content"
+      }
+    }
+  ],
   "script-src": [
     {
       when: (src) => src.kind === "scheme" && src.value === "data:",
@@ -71,7 +93,7 @@ const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
       reason:
         "Allows execution of JavaScript embedded in data URLs, enabling XSS even without external scripts.",
       recommendation:
-        "remove data: from script-src. Inline scripts should be controlle using nonces or hashes instead",
+        "Remove data: from script-src. Use nonces/hashes for inline scripts.",
       attackClass: "XSS",
       references: {
         label: "MDN - script-src",
@@ -84,40 +106,47 @@ const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
       reason:
         "Blob URLs can be abused if attacker-controlled data is converted into executable scripts.",
       recommendation:
-        "Avoid blob: in script-src unless required by a trusted framework, and ensure blob URLs are never attacker-controlled.",
+        "Avoid blob: in script-src unless strictly required.",
       attackClass: "SANDBOX_ESCAPE",
       references: {
         label: "MDN - script-src",
         url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src",
       },
     },
-    {
-      when: (src) => src.kind === "host" && src.value.includes("*"),
-      level: "DANGER",
-      reason:
-        "Allowing scripts from anywhere can result in remote code execution.",
-      recommendation:
-        "Remove '*' from script-src. Scripts are meant to be controlled using nonces and hashes.",
-      attackClass: "SUPPLY_CHAIN",
-      references: {
-        label: "MDN - host source",
-        url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy#host-source",
-      },
-    },
+    // {
+    //   when: (src) => src.kind === "host" && src.value === "*",
+    //   level: "DANGER",
+    //   reason: "Allows script from ANY origin, complete supply chain vulnerability.",
+    //   recommendation: "Use specfic hosts or 'self'. Scripts should use nonces/hashes.",
+    //   attackClass: "SUPPLY_CHAIN"
+    // },
+    // {
+    //   when: (src) => src.kind === "host" && /^\*\.[^/]+$/.test(src.value),
+    //   level: "DANGER",
+    //   reason:
+    //     "Broad wildcard subdomain allows script from any subdomain.",
+    //   recommendation:
+    //     "Use specific subdomains instead of wildcards.",
+    //   attackClass: "SUPPLY_CHAIN",
+    //   references: {
+    //     label: "MDN - host source",
+    //     url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy#host-source",
+    //   },
+    // },
   ],
   "style-src": [
     {
       when: (src) => src.kind === "keyword" && src.value === "unsafe-eval",
       level: "INVALID",
-      reason: "Doesn't belong here, there is no eval function in style.",
+      reason: "Does not belong here, there is no eval function in style.",
     },
     {
       when: (src) => src.kind === "keyword" && src.value === "unsafe-inline",
       level: "DANGER",
       reason:
-        "Allows inline styles, which can be abused for UI redressing, clickjacking, and data exfiltration via CSS.",
+        "Allows inline styles, can be abused for UI redressing, clickjacking.",
       recommendation:
-        "Move inline styles to external stylesheets or use CSP hashes for critical inline styles",
+        "Use external stylesheets or use CSP hashes.",
       attackClass: "UI_REDRESS",
       references: {
         label: "MDN - unsafe-inline",
@@ -130,7 +159,7 @@ const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
       reason:
         "Allows CSS from data URLs, increasing attack surface if user input reaches style contexts.",
       recommendation:
-        "Avoid data: in style-src where possible. Use external stylesheets or CSP hashes instead.",
+        "Use external stylesheets instead.",
       attackClass: "UI_REDRESS",
       references: {
         label: "MDN - style-src",
@@ -143,7 +172,7 @@ const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
       reason:
         "Allows CSS from arbitrary origins, enabling UI manipulation, clickjacking, and limited data exfiltration via CSS.",
       recommendation:
-        "Replace wildcard subdomains with explicit, trusted style hosts or restrict to 'self' where possible.",
+        "Use specific hosts or 'self'.",
       attackClass: "SUPPLY_CHAIN",
       references: {
         label: "MDN - host source",
@@ -156,9 +185,9 @@ const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
       when: (src) => src.kind === "scheme" && src.value === "data:",
       level: "WARNING",
       reason:
-        "Allows images from data URLs, which can include SVGs capable of script execution and be abused in XSS chains.",
+        "SVGs in data URLs can execute scripts in some browsers.",
       recommendation:
-        "Allow data: only if SVG images are sanitized or disabled. Prefer hosting images on trusted origins.",
+        "Allow data: only if SVG images are sanitized. Prefer hosting images on trusted origins.",
       attackClass: "XSS",
       references: {
         label: "MDN - img-src",
@@ -174,12 +203,19 @@ const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
   ],
   "connect-src": [
     {
-      when: (src) => src.kind === "host",
+      when: (src) => src.kind === "wildcard",
+      level: "DANGER",
+      reason: "Allows fetch/XHR/WebSocket to any origin, data exifiltration risk.",
+      recommendation: "Restrict to required API endpoints.",
+      attackClass: "DATA_EXFILTRATION"
+    },
+    {
+      when: (src) => src.kind === "host" && src.value.includes("*"),
       level: "WARNING",
       reason:
-        "Allows outbound network requests; if compromised, attackers can exfiltrate sensitive data via fetch or WebSockets.",
+        "Broad host pattern allows connections to many origins.",
       recommendation:
-        "Restrict connect-src to required API and WebSocket endpoints instead of broad or unnecessary external hosts.",
+        "Use specific API endpoints.",
       attackClass: "DATA_EXFILTRATION",
       references: {
         label: "MDN - host source",
@@ -192,7 +228,7 @@ const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
       when: (src) => src.kind === "wildcard",
       level: "DANGER",
       reason:
-        "Allows the site to be embedded by any origin, enabling clickjacking and UI redress attacks.",
+        "Allows embedding by any origin, enabling clickjacking.",
       recommendation:
         "Replace '*' with 'none' or restrict to trusted parent origins.",
       attackClass: "CLICKJACKING",
@@ -279,11 +315,41 @@ const DIRECTIVE_RULES: Record<string, RuleCheck[]> = {
       when: (src) => src.kind === "wildcard",
       level: "WARNING",
       reason:
-        "Allows media to be loaded from any origin, enabling tracking and data exfiltration.",
+        "Allows media to be loaded from any origin, enabling tracking.",
       recommendation: "Restrict media-src to trusted origins.",
       attackClass: "TRACKING",
     },
   ],
+  "font-src": [
+    {
+      when: (src) => src.kind === "wildcard",
+      level: "WARNING",
+      reason: "ALlows font from any origin.",
+      recommendation: "Use 'self' or specific font CDNs."
+    }
+  ],
+  "report-uri": [
+    {
+      when: () => true,
+      level: "GOOD",
+      reason: "Enables CSP violation reporting, helps monitor and debug.",
+      references: {
+        label: "MDN - report-uri",
+        url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri"
+      }
+    }
+  ],
+  "report-to": [
+    {
+      when: () => true,
+      level: "GOOD",
+      reason: "Modern CSP violation reporting using Reporting API.",
+      references: {
+        label: "MDN - report-to",
+        url: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-to"
+      }
+    }
+  ]
 };
 
 export const getRulesForDirective = (directive: string): RuleCheck[] => {

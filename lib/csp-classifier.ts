@@ -6,8 +6,9 @@ const classifySource = (src: string): CSPSource => {
 
     if(normalized === "*") return { kind: "wildcard", value: "*" }
     if(normalized.startsWith("nonce-")) return { kind: "nonce", value: normalized }
+    if(/^sha(256|384|512)-/.test(normalized)) return { kind: "hash", value: normalized }
     if(normalized.endsWith(":")) return { kind: "scheme", value: normalized }
-    if(["self", "none", "unsafe-inline", "unsafe-eval"].includes(normalized)) return { kind: "keyword", value: normalized }
+    if(["self", "none", "unsafe-inline", "unsafe-eval", "script-dynamic", "wasm-unsafe-eval"].includes(normalized)) return { kind: "keyword", value: normalized }
 
     return { kind: "host", value: normalized }
 }
